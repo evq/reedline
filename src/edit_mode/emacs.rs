@@ -177,6 +177,8 @@ impl EditMode for Emacs {
     fn edit_mode(&self) -> PromptEditMode {
         PromptEditMode::Emacs
     }
+
+    fn set_edit_mode(&mut self, _mode: &PromptEditMode) {}
 }
 
 impl Emacs {

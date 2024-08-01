@@ -28,7 +28,7 @@ use {
             HistoryNavigationQuery, HistorySessionId, SearchDirection, SearchQuery,
         },
         painting::{Painter, PainterSuspendedState, PromptLines},
-        prompt::{PromptEditMode, PromptHistorySearchStatus},
+        prompt::{PromptEditMode, PromptHistorySearchStatus, PromptViMode},
         result::{ReedlineError, ReedlineErrorVariants},
         terminal_extensions::{bracketed_paste::BracketedPasteGuard, kitty::KittyProtocolGuard},
         utils::text_manipulation,
@@ -922,7 +922,8 @@ impl Reedline {
             | ReedlineEvent::MenuLeft
             | ReedlineEvent::MenuRight
             | ReedlineEvent::MenuPageNext
-            | ReedlineEvent::MenuPagePrevious => Ok(EventStatus::Inapplicable),
+            | ReedlineEvent::MenuPagePrevious
+            | ReedlineEvent::ViModeNormal => Ok(EventStatus::Inapplicable),
         }
     }
 
@@ -1255,6 +1256,14 @@ impl Reedline {
                     }
                 }
                 // Exhausting the event handlers is still considered handled
+                Ok(EventStatus::Inapplicable)
+            }
+            ReedlineEvent::ViModeNormal => {
+                if let PromptEditMode::Vi(_) = self.edit_mode.edit_mode() {
+                    self.edit_mode
+                        .set_edit_mode(&PromptEditMode::Vi(PromptViMode::Normal));
+                    return Ok(EventStatus::Handled);
+                }
                 Ok(EventStatus::Inapplicable)
             }
             ReedlineEvent::None | ReedlineEvent::Mouse => Ok(EventStatus::Inapplicable),

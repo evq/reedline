@@ -13,4 +13,7 @@ pub trait EditMode: Send {
 
     /// What to display in the prompt indicator
     fn edit_mode(&self) -> PromptEditMode;
+
+    /// Set the prompt edit mode
+    fn set_edit_mode(&mut self, mode: &PromptEditMode);
 }

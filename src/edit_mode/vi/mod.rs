@@ -175,6 +175,15 @@ impl EditMode for Vi {
             ViMode::Insert => PromptEditMode::Vi(PromptViMode::Insert),
         }
     }
+
+    fn set_edit_mode(&mut self, mode: &PromptEditMode) {
+        if let PromptEditMode::Vi(vi_mode) = mode {
+            self.mode = match vi_mode {
+                PromptViMode::Normal => ViMode::Normal,
+                PromptViMode::Insert => ViMode::Insert,
+            }
+        }
+    }
 }
 
 #[cfg(test)]
